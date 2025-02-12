@@ -1,8 +1,8 @@
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { student } from "../../models/students.models.js";
-import { doHashValidation } from '../../utils/hashing.js';
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { student } from "../models/students.models.js";
+import { doHashValidation } from '../utils/hashing.js';
 import jwt from 'jsonwebtoken';
 
 const studentLogin = asyncHandler(async (req, res) => {
