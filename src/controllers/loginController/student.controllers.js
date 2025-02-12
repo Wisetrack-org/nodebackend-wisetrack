@@ -12,13 +12,12 @@ const studentLogin = asyncHandler(async (req, res) => {
         throw new ApiError(400, "ID and password are required");
     }
 
-    const Student = await student.findOne({ id }).select("+password"); // Include password in query
+    const Student = await student.findOne({ id }).select("+password");
 
     if (!Student) {
         throw new ApiError(404, "Student ID not found");
     }
 
-    // 1. Verify Password
     const passwordMatch = await doHashValidation(password, Student.password);
 
     if (!passwordMatch) {
