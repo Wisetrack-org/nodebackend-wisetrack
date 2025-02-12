@@ -1,23 +1,47 @@
-import { asyncHandler } from "../../utils/asyncHandler";
-import { ApiError } from "../../utils/ApiError";
-import { ApiResponse } from "../../utils/ApiResponse";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
+import { student } from "../../models/students.models.js";
+import { doHashValidation } from '../../utils/hashing.js';
+import jwt from 'jsonwebtoken';
 
 const studentLogin = asyncHandler(async (req, res) => {
-    const { id } = req.body;
+    const { id, password } = req.body;
 
-    if (!id) {
-        throw new ApiError(400, "Error filling the form");
+    if (!id || !password) {
+        throw new ApiError(400, "ID and password are required");
     }
 
-    const student = await student.findOne({ id });
+    const Student = await student.findOne({ id }).select("+password"); // Include password in query
 
-    if (!student) {
-        throw new ApiError(404, "Student id not found");
+    if (!Student) {
+        throw new ApiError(404, "Student ID not found");
     }
+
+    // 1. Verify Password
+    const passwordMatch = await doHashValidation(password, Student.password);
+
+    if (!passwordMatch) {
+        throw new ApiError(401, "Invalid password");
+    }
+
+    const token = jwt.sign(
+        { studentId: Student._id },
+        process.env.TOKEN_SECRET || 'your_secret_key',
+        { expiresIn: '8h' }
+    );
+
+    res.cookie("Authorization", "Bearer " + token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+        httpOnly: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: 'strict',
+    });
 
     return res
         .status(200)
-        .json(new ApiResponse(200, student, "Logged in successfully"));
+        .json(new ApiResponse(200, Student, "Logged in successfully"));
+
 });
 
 export { studentLogin };

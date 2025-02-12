@@ -1,4 +1,4 @@
-import { studentLogin } from "../controllers/loginController/student.controllers";
+import { studentLogin } from "../controllers/loginController/student.controllers.js";
 import { Router } from "express";
 
 const router = Router();

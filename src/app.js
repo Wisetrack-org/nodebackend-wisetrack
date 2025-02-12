@@ -34,7 +34,7 @@ app.use(express.static("public"));
 //routes import
 import aiRouter from "./routes/aI.routes.js";
 import form from "./routes/submission.routes.js";
-import studentLogin  from "./controllers/loginController/student.controllers.js";
+import studentLogin  from "./routes/login.routes.js";
 
 app.use("/api/aI", aiRouter);
 
