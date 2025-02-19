@@ -34,7 +34,8 @@ app.use(express.static("public"));
 //routes import
 import aiRouter from "./routes/aI.routes.js";
 import form from "./routes/submission.routes.js";
-import studentLogin  from "./routes/login.routes.js";
+import studentLogin  from "./routes/signin.routes.js";
+import signup from "./routes/signup.routes.js";
 
 app.use("/api/aI", aiRouter);
 
@@ -43,6 +44,9 @@ app.use("/api/aI/feedback", form);
 
 // for login
 app.use("/api", studentLogin)
+
+// for signup
+app.use("/api", signup);
 
 export { app };
 // import express from "express";
