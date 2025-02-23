@@ -13,6 +13,6 @@ const connectDB = async () => {
         console.error("Database connection error:", error);
         throw error; 
     }
-}; 
+};
 
 export { connectDB };
