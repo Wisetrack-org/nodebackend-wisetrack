@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
-// import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
+
+
 
 const app = express();
 
@@ -18,6 +20,8 @@ const corsOptions = {
 
 app.options('*', cors(corsOptions)); // Pre-flight request handling
 
+app.use(cookieParser());
+
 // Enable CORS for all routes
 app.use(cors(corsOptions));
 
@@ -31,6 +35,7 @@ import aiRouter from "./routes/aI.routes.js";
 import form from "./routes/submission.routes.js";
 import studentLogin  from "./routes/signin.routes.js";
 import signup from "./routes/signup.routes.js";
+// import protectedRoute from "./routes/student.routes.js"
 
 app.use("/api/aI", aiRouter);
 
@@ -42,5 +47,8 @@ app.use("/api", studentLogin)
 
 // for signup
 app.use("/api", signup);
+
+// for protected routes testing
+// app.use("/api", protectedRoute)
 
 export { app };

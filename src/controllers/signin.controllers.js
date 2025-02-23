@@ -17,16 +17,16 @@ const studentLogin = asyncHandler(async (req, res) => {
     const connection = await connectDB();
 
     try {
-        const [teachers] = await connection.execute(
+        const [students] = await connection.execute(
             "SELECT * FROM students WHERE email = ?",
             [email]
         );
 
-        if (teachers.length === 0) {
+        if (students.length === 0) {
             throw new ApiError(404, "Student's email not found");
         }
 
-        const teacher = teachers[0];
+        const student = students[0];
 
         // verify password
         const passwordMatch = await doHashValidation(password, teacher.password);
@@ -37,10 +37,13 @@ const studentLogin = asyncHandler(async (req, res) => {
 
         // jwt
         const token = jwt.sign(
-            { teacherId: teacher.teacher_id },
+            { studentId: student.student_id, userType: 'students' },
             process.env.TOKEN_SECRET || 'your_secret_key',
             { expiresIn: '8h' }
         );
+
+        console.log("cookie", token);
+        
 
         // cookie
         res.cookie("Authorization", "Bearer " + token, {
@@ -92,7 +95,7 @@ const teacherLogin = asyncHandler(async (req, res) => {
 
         // jwt
         const token = jwt.sign(
-            { teacherId: teacher.teacher_id },
+            { teacherId: teacher.teacher_id, userType: 'teachers' }, // Add userType
             process.env.TOKEN_SECRET || 'your_secret_key',
             { expiresIn: '8h' }
         );
@@ -147,7 +150,7 @@ const universityLogin = asyncHandler(async (req, res) => {
 
         // jwt
         const token = jwt.sign(
-            { universityId: university.university_id },
+            { universityId: university.university_id, userType: 'universities' }, // Add userType
             process.env.TOKEN_SECRET || 'your_secret_key',
             { expiresIn: '8h' }
         );
