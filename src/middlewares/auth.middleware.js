@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { connectDB } from "../mysql/index.js"; // Import your database connection
+import { connectDB } from "../mysql/index.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
     try {
@@ -16,7 +16,6 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
         const connection = await connectDB();
         let users;
 
-        // Determine user type and fetch from appropriate table
         if (decodedToken.userType === 'students') {
             const [students] = await connection.execute(
                 "SELECT * FROM Students WHERE student_id = ?",
@@ -43,7 +42,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             throw new ApiError(401, "User not found");
         }
 
-        req.user = users[0]; // Attach user data to request object
+        req.user = users[0];
         next();
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {

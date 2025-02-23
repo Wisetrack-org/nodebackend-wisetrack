@@ -40,10 +40,7 @@ const studentLogin = asyncHandler(async (req, res) => {
             { studentId: student.student_id, userType: 'students' },
             process.env.TOKEN_SECRET || 'your_secret_key',
             { expiresIn: '8h' }
-        );
-
-        console.log("cookie", token);
-        
+        );        
 
         // cookie
         res.cookie("Authorization", "Bearer " + token, {
