@@ -12,22 +12,17 @@ app.use((req, res, next) => {
 });
 
 const corsOptions = {
-    origin: "*", // Your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type"], // Allowed headers
-    credentials: true, // Allow credentials (cookies, authorization headers)
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
 };
 
-app.options('*', cors(corsOptions)); // Pre-flight request handling
-
-app.use(cookieParser());
-
-// Enable CORS for all routes
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
-
+app.use(cookieParser());
 app.use(express.json({}));
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static("public"));
 
 //routes import
 import aiRouter from "./routes/aI.routes.js";
