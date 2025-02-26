@@ -48,7 +48,11 @@ const studentSignup = asyncHandler(async (req, res) => {
         return res.status(201).json(new ApiResponse(200, "Student registered successfully"));
     } catch (err) {
         console.error("MySQL Error:", err);
-        throw new ApiError(500, "Internal Server Error");
+        if (err instanceof ApiError) {
+            throw err;
+        } else {
+            throw new ApiError(500, "Internal Server Error");
+        }
     } finally {
         connection.end();
     }
