@@ -1,8 +1,8 @@
-import { signupSchema } from "../middlewares/validator.middleware.cjs";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { doHash } from "../utils/hashing.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { signupSchema } from "../middlewares/validator.middleware.cjs";
+import { doHash } from "../utils/hashing.js";
 import { connectDB } from "../mysql/index.js"; 
 
 const createUser = async (connection, tableName, email, hashedPassword, additionalFields) => {

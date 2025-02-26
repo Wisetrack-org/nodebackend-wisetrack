@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "../mysql/index.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
+    let connection;
     try {
         const token = req.cookies?.Authorization?.replace("Bearer ", "") || req.header("Authorization")?.replace("Bearer ", "");
 
@@ -13,12 +14,12 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
 
         const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'your_secret_key');
 
-        const connection = await connectDB();
+        connection = await connectDB();
         let users;
 
         if (decodedToken.userType === 'students') {
             const [students] = await connection.execute(
-                "SELECT * FROM Students WHERE student_id = ?",
+                "SELECT student_id, first_name, last_name FROM Students WHERE student_id = ?",
                 [decodedToken.studentId]
             );
             users = students;
@@ -51,6 +52,10 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             throw new ApiError(401, "Token expired. Please log in again.");
         } else {
             throw new ApiError(401, error.message || "Unauthorized request");
+        }
+    } finally {
+        if (connection) {
+            await connection.end();
         }
     }
 });

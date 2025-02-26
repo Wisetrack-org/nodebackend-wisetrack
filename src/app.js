@@ -35,7 +35,7 @@ import aiRouter from "./routes/aI.routes.js";
 import form from "./routes/submission.routes.js";
 import studentLogin  from "./routes/signin.routes.js";
 import signup from "./routes/signup.routes.js";
-// import protectedRoute from "./routes/student.routes.js"
+import student from "./routes/student.routes.js"
 
 app.use("/api/aI", aiRouter);
 
@@ -48,7 +48,7 @@ app.use("/api", studentLogin)
 // for signup
 app.use("/api", signup);
 
-// for protected routes testing
-// app.use("/api", protectedRoute)
+// for student dashboard
+app.use("/api/student", student);
 
 export { app };

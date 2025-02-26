@@ -29,7 +29,7 @@ const studentLogin = asyncHandler(async (req, res) => {
         const student = students[0];
 
         // verify password
-        const passwordMatch = await doHashValidation(password, teacher.password);
+        const passwordMatch = await doHashValidation(password, student.password);
 
         if (!passwordMatch) {
             throw new ApiError(401, "Invalid password");
@@ -52,7 +52,7 @@ const studentLogin = asyncHandler(async (req, res) => {
 
         return res
             .status(200)
-            .json(new ApiResponse(200, teacher, "Logged in successfully"));
+            .json(new ApiResponse(200, student, "Logged in successfully"));
     } catch (error) {
         console.error("MySQL Error:", error);
         throw new ApiError(500, "Internal Server Error");
