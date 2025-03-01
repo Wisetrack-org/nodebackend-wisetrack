@@ -11,7 +11,7 @@ app.use((req, res, next) => {
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "YOUR_PRODUCTION_FRONTEND_URL_IF_ANY",
+  "https://frontend-wisetrack.vercel.app",
 ];
 
 const corsOptions = {
