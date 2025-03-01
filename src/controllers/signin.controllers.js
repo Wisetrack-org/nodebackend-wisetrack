@@ -18,7 +18,7 @@ const studentLogin = asyncHandler(async (req, res) => {
 
     try {
         const [students] = await connection.execute(
-            "SELECT * FROM students WHERE email = ?",
+            "SELECT * FROM Students WHERE email = ?",
             [email]
         );
 
@@ -73,7 +73,7 @@ const teacherLogin = asyncHandler(async (req, res) => {
 
     try {
         const [teachers] = await connection.execute(
-            "SELECT * FROM teachers WHERE email = ?",
+            "SELECT * FROM Teachers WHERE email = ?",
             [email]
         );
 
@@ -128,7 +128,7 @@ const universityLogin = asyncHandler(async (req, res) => {
 
     try {
         const [universities] = await connection.execute(
-            "SELECT * FROM universities WHERE email = ?",
+            "SELECT * FROM Universities WHERE email = ?",
             [email]
         );
 
