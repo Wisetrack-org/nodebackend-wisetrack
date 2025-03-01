@@ -47,12 +47,16 @@ const studentLogin = asyncHandler(async (req, res) => {
             expires: new Date(Date.now() + 8 * 3600000),
             httpOnly: process.env.NODE_ENV === "production",
             secure: process.env.NODE_ENV === "production",
-            sameSite: 'strict',
+            sameSite: 'none',
+            path: '/'
         });
 
         return res
             .status(200)
-            .json(new ApiResponse(200, student, "Logged in successfully"));
+            .json(new ApiResponse(200, { 
+                ...student,
+                token: token
+            }, "Logged in successfully"));
     } catch (error) {
         console.error("MySQL Error:", error);
         throw new ApiError(500, "Internal Server Error");
