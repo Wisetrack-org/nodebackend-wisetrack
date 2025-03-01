@@ -9,10 +9,21 @@ app.use((req, res, next) => {
   next();
 });
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "YOUR_PRODUCTION_FRONTEND_URL_IF_ANY",
+];
+
 const corsOptions = {
-  origin: "*",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
