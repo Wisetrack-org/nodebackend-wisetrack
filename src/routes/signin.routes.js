@@ -4,9 +4,9 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/studentSignin").get(studentLogin);
-router.route("/teacherSignin").get(teacherLogin);
-router.route("/universitySignin").get(universityLogin);
+router.route("/studentSignin").post(studentLogin);
+router.route("/teacherSignin").post(teacherLogin);
+router.route("/universitySignin").post(universityLogin);
 
 router.route("/protectedRoute").get(verifyJWT, (req, res) => {
     res.status(200).json({ message: "Protected route accessed", user: req.user });
