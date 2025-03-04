@@ -25,7 +25,7 @@ const createUser = async (connection, tableName, email, hashedPassword, addition
 };
 
 const studentSignup = asyncHandler(async (req, res) => {
-    const { email, password, first_name, last_name, date_of_birth, enrollment_date, university_id } = req.body;
+    const { email, password, first_name, last_name, date_of_birth, enrollment_date, university_id, class_id } = req.body;  
 
     const { error } = signupSchema.validate({ email, password });
 
@@ -42,21 +42,32 @@ const studentSignup = asyncHandler(async (req, res) => {
             last_name,
             date_of_birth,
             enrollment_date,
-            university_id
+            university_id,
+            class_id: class_id || null
         });
+
+        const [[{ student_id }]] = await connection.execute(
+            `SELECT student_id FROM Students WHERE email = ?`,
+            [email]
+        );
+
+        if (class_id) {
+            await connection.execute(
+                `INSERT INTO StudentSubjects (student_id, subject_id)
+                 SELECT ?, subject_id FROM Subjects WHERE class_id = ?`,
+                [student_id, class_id]
+            );
+        }
 
         return res.status(201).json(new ApiResponse(200, "Student registered successfully"));
     } catch (err) {
         console.error("MySQL Error:", err);
-        if (err instanceof ApiError) {
-            throw err;
-        } else {
-            throw new ApiError(500, "Internal Server Error");
-        }
+        throw new ApiError(500, "Internal Server Error");
     } finally {
         connection.end();
     }
 });
+
 
 const teacherSignup = asyncHandler(async (req, res) => {
     const { email, password, first_name, last_name, subject, hire_date, university_id } = req.body;
