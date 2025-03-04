@@ -9,12 +9,12 @@ const getStudentDashbpoard = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Unauthorized: Please log in as a student.");
   }
 
+  const connection = await connectDB();
   const studentId = req.user.student_id;
-
+  
   const profileFields = "first_name,last_name";
   const studentProfile = selectFields(req.user, profileFields);
 
-  const connection = await connectDB();
   const [subjects] = await connection .execute(
     `SELECT s.subject_id, s.subject_name FROM StudentSubjects ss 
      JOIN Subjects s ON ss.subject_id = s.subject_id 
