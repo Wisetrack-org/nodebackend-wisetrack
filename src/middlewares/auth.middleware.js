@@ -37,8 +37,8 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             users = universities;
         } else if (decodedToken.userType === 'parents') {
             const [parents] = await connection.execute(
-                "SELECT student_id FROM Students WHERE student_id = ?", 
-                [decodedToken.parentId]
+                "SELECT * FROM Students WHERE student_id = ?", 
+                [decodedToken.studentId]
             )
             users = parents;
         }

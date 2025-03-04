@@ -155,7 +155,7 @@ const universityLogin = asyncHandler(async (req, res) => {
 
     // jwt
     const token = jwt.sign(
-      { universityId: university.university_id, userType: "universities" }, // Add userType
+      { universityId: university.university_id, userType: "universities" },
       process.env.TOKEN_SECRET || "your_secret_key",
       { expiresIn: "8h" }
     );
@@ -179,4 +179,56 @@ const universityLogin = asyncHandler(async (req, res) => {
   }
 });
 
-export { studentLogin, teacherLogin, universityLogin };
+// for parents
+const parentLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
+  const connection = await connectDB();
+
+  try {
+    const [studentResult] = await connection.execute(
+      "SELECT student_id, first_name, last_name, email, password FROM Students WHERE email = ?",
+      [email]
+    );
+
+    if (studentResult.length === 0) {
+      throw new ApiError(401, "Invalid email or password");
+    }
+
+    const student = studentResult[0];
+
+    if (!student.password) {
+      throw new ApiError(500, "Password not found for this student");
+    }
+
+    // jwt
+    const token = jwt.sign(
+      { studentId: student.student_id, userType: "parents" },
+      process.env.TOKEN_SECRET || "your_secret_key",
+      { expiresIn: "8h" }
+    );
+
+    // cookie
+    res.cookie("Authorization", "Bearer " + token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, student, "Logged in successfully"));
+  } catch (error) {
+    console.error("Login error:", error);
+    throw new ApiError(500, "Login failed");
+  } finally {
+    await connection.end();
+  }
+});
+
+export { studentLogin, teacherLogin, universityLogin, parentLogin };
