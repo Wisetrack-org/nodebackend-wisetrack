@@ -35,7 +35,15 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
                 [decodedToken.universityId]
             );
             users = universities;
-        } else {
+        } else if (decodedToken.userType === 'parents') {
+            const [parents] = await connection.execute(
+                "SELECT student_id FROM Students WHERE student_id = ?", 
+                [decodedToken.parentId]
+            )
+            users = parents;
+        }
+        
+        else {
             throw new ApiError(401, "Invalid user type");
         }
 

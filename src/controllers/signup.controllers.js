@@ -24,8 +24,8 @@ const createUser = async (connection, tableName, email, hashedPassword, addition
     );
 };
 
-const studentSignup = asyncHandler(async (req, res) => {
-    const { email, password, first_name, last_name, date_of_birth, enrollment_date, university_id, class_id } = req.body;  
+const studentSignup = asyncHandler(async (req, res) => {    
+    const { email, password, first_name, last_name, date_of_birth, enrollment_date, university_id, class_id, semester } = req.body;  
 
     const { error } = signupSchema.validate({ email, password });
 
@@ -43,7 +43,8 @@ const studentSignup = asyncHandler(async (req, res) => {
             date_of_birth,
             enrollment_date,
             university_id,
-            class_id: class_id || null
+            class_id: class_id || null,
+            semester
         });
 
         const [[{ student_id }]] = await connection.execute(
@@ -53,9 +54,9 @@ const studentSignup = asyncHandler(async (req, res) => {
 
         if (class_id) {
             await connection.execute(
-                `INSERT INTO StudentSubjects (student_id, subject_id)
-                 SELECT ?, subject_id FROM Subjects WHERE class_id = ?`,
-                [student_id, class_id]
+                `INSERT INTO StudentSubjects (student_id, subject_id, semester)
+                 SELECT ?, subject_id, ? FROM Subjects WHERE class_id = ?`,
+                [student_id, semester, class_id]
             );
         }
 
