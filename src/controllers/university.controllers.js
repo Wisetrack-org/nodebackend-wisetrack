@@ -6,7 +6,10 @@ import { connectDB } from "../mysql/index.js";
 
 const getUniDashboard = asyncHandler(async (req, res) => {
   if (!req.user || !req.user.university_id) {
-    throw new ApiError(401, "Unauthorized: Please log in as a university admin.");
+    throw new ApiError(
+      401,
+      "Unauthorized: Please log in as a university admin."
+    );
   }
 
   const uniId = req.user.university_id;
@@ -39,9 +42,22 @@ const getUniDashboard = asyncHandler(async (req, res) => {
       [uniId]
     );
 
-    res.status(200).json(
-      new ApiResponse(200, { teachers, students }, "University dashboard data fetched successfully")
+    const selectedTeachers = teachers.map((teacher) =>
+      selectFields(teacher, req.query.fields)
     );
+    const selectedStudents = students.map((student) =>
+      selectFields(student, req.query.fields)
+    );
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { teachers: selectedTeachers, students: selectedStudents },
+          "University dashboard data fetched successfully"
+        )
+      );
   } catch (err) {
     console.error("MySQL Error:", err);
     throw new ApiError(500, "Internal Server Error");
