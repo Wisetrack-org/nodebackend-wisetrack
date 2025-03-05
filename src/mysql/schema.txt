@@ -59,6 +59,19 @@ if (!await tableExists('Teachers')) {
     console.log("Teachers table already exists.");
 }
 
+ if (!(await tableExists("TeacherClasses"))) {
+      await connection.execute(`CREATE TABLE TeacherClasses (
+  assignment_id INT PRIMARY KEY AUTO_INCREMENT,
+  teacher_id INT NOT NULL,
+  class_id INT NOT NULL,
+  academic_year YEAR NOT NULL,
+  branch VARCHAR(50) NOT NULL,
+  FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id),
+  FOREIGN KEY (class_id) REFERENCES Classes(class_id),
+  UNIQUE KEY unique_assignment (teacher_id, class_id, academic_year)
+);`);
+    }
+
 if (!(await tableExists("Universities"))) {
       await connection.execute(`
         CREATE TABLE Universities (

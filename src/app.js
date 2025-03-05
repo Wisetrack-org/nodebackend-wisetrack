@@ -52,6 +52,7 @@ import signup from "./routes/signup.routes.js";
 import student from "./routes/student.routes.js";
 import university from "./routes/university.routes.js"
 import parent from "./routes/parents.routes.js"
+import teacher from "./routes/teacher.routes.js"
 
 app.use("/api/aI", aiRouter);
 
@@ -71,7 +72,7 @@ app.use("/api/student", student);
 app.use("/api/parent", parent)
 
 // for teacher
-
+app.use("/api/teacher", teacher)
 
 // for university
 app.use("/api/university", university)
