@@ -6,8 +6,6 @@ dotenv.config({
   path: "./.env",
 });
 
-// PORT = 3000;
-
 app.get("/", (req, res) => {
   res.send("Atleast working😭");
 });
@@ -20,8 +18,8 @@ async function startServer() {
     await connectDB();
 
     // start Server
-    app.listen(process.env.PORT, () => {
-      console.log(`⚙️ Server is running at port: ${process.env.PORT}`);
+    app.listen(process.env.APP_PORT, () => {
+      console.log(`⚙️ Server is running at port: ${process.env.APP_PORT}`);
     });
 
     console.log("Database connected");

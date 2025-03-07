@@ -19,7 +19,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
 
         if (decodedToken.userType === 'students') {
             const [students] = await connection.execute(
-                "SELECT student_id, first_name, last_name FROM Students WHERE student_id = ?",
+                "SELECT student_id, first_name, last_name, email FROM Students WHERE student_id = ?",
                 [decodedToken.studentId]
             );
             users = students;

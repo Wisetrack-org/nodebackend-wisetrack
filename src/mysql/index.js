@@ -6,7 +6,8 @@ const connectDB = async () => {
             host: `${process.env.HOST}`,
             user: "root",
             password: `${process.env.PASSWORD}`,
-            database: `${process.env.DATABASE}`
+            database: `${process.env.DATABASE}`,
+            port: `${process.env.PORT}`
         });
         return connection; 
     } catch (error) {

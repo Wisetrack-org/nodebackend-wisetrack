@@ -63,7 +63,6 @@ const teacherDashboard = asyncHandler(async (req, res) => {
           assigned_classes: parseAssignedClasses(assigned_classes),
           students: students.map((student) => ({
             ...student,
-            // attendance_percentage: parseFloat(student.attendance_percentage),
           })),
         },
         "Dashboard data fetched successfully"
