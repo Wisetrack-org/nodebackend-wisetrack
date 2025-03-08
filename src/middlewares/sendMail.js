@@ -8,7 +8,6 @@ const transport = nodemailer.createTransport({
         // user: `${process.env.NODE_CODE_SENDING_EMAIL_ADDRESS}`,
         user: "shiv.test.dev@gmail.com",
         pass: `${process.env.NODE_CODE_SENDING_EMAIL_PASSWORD}`,
-        // pass: "fwoymxtkdxjppici",
     },
     // connectionTimeout: 10000,
     // greetingTimeout: 10000,

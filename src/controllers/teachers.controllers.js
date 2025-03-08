@@ -33,7 +33,7 @@ const teacherDashboard = asyncHandler(async (req, res) => {
 
     // student ans class details
     const [students] = await connection.execute(
-        `SELECT 
+      `SELECT 
           s.student_id,
           s.first_name,
           s.last_name,
@@ -52,8 +52,8 @@ const teacherDashboard = asyncHandler(async (req, res) => {
           s.university_id = ? 
           AND (? IS NULL OR tc.teacher_id = ?)
         GROUP BY s.student_id, c.class_id;`,
-        [teacherId, university_id, teacherId, teacherId]
-      );
+      [teacherId, university_id, teacherId, teacherId]
+    );
 
     res.status(200).json(
       new ApiResponse(
@@ -86,4 +86,64 @@ const parseAssignedClasses = (classString) => {
   );
 };
 
-export { teacherDashboard };
+const timeTableUpload = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new ApiError(404, "Teacher not found");
+  }
+
+  const teacherId = req.user.teacher_id;
+  if(!teacherId) {
+    
+  }
+  const { week_start_date, timetable_data } = req.body;
+
+  if (!week_start_date) {
+    throw new ApiError(400, "Week start date is required");
+  }
+
+  if (!timetable_data) {
+    throw new ApiError(400, "Timetable data is required");
+  }
+
+  const jsonData = JSON.stringify(timetable_data);
+  const connection = await connectDB();
+
+  try {
+    const [existingTimetable] = connection.execute(
+      `SELECT time_table_id from TimeTable WHERE teacher_id = ? AND week_start_date = ?`,
+      [teacherId, week_start_date]
+    );
+    let timeTableId;
+
+    if (existingTimeTable.length > 0) {
+      timeTableId = await existingTimetable[0].time_table_id;
+      await connection.execute(
+        `UPDATE TimeTable 
+         SET file_path = ?, upload_timestamp = CURRENT_TIMESTAMP 
+         WHERE time_table_id = ?`,
+        [jsonData, timeTableId]
+      );
+    } else {
+      const [result] = await connection.execute(
+        `INSERT INTO TimeTable (teacher_id, week_start_date, file_path)
+         VALUES (?, ?, ?)`,
+        [teacherId, week_start_date, jsonData]
+      );
+      timeTableId = result.insertId;
+    }
+
+    res.status(200).json(new
+      ApiResponse(200, {
+        time_table_id: timeTableId,
+        teacher_id: teacherId,
+        week_start_date,
+      })
+    );
+  } catch (error) {
+    throw new ApiError(500, "Failed to upload timetable");
+  } finally {
+    connection.end();
+  }
+});
+
+export { teacherDashboard, timeTableUpload };
