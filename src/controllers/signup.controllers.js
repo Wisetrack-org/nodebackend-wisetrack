@@ -128,4 +128,34 @@ const universitySignup = asyncHandler(async (req, res) => {
     }
 });
 
-export { studentSignup, teacherSignup, universitySignup };
+const parentSignup = asyncHandler(async (req, res) => {
+    const { email, password, first_name, last_name, student_id, phone } = req.body;
+
+    const { error } = signupSchema.validate({ email, password });
+
+    if (error) {
+        throw new ApiError(400, "Provide a valid email or password");
+    }
+
+    const hashedPassword = await doHash(password, 12);
+    const connection = await connectDB();
+
+    try {
+        await createUser(connection, 'Parents', email, hashedPassword, {
+            first_name,
+            last_name,
+            phone,
+            student_id
+        });
+
+        return res.status(201).json(new ApiResponse(200, "Parent registered successfully"));
+    } catch (err) {
+        console.error("MySQL Error:", err);
+        throw new ApiError(500, "Internal Server Error");
+    } finally {
+        connection.end();
+    }
+});
+
+
+export { studentSignup, teacherSignup, universitySignup, parentSignup };
